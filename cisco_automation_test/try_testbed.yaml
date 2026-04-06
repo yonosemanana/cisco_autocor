@@ -1,0 +1,9 @@
+devices:
+  SW1:
+    type: "switch"
+    os: "ios"
+    platform: "iol"
+    connections:
+      cli:
+        protocol: "ssh"
+        ip: "10.255.255.6"
