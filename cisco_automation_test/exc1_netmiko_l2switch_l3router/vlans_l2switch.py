@@ -116,4 +116,6 @@ if __name__ == "__main__":
     # trunk_add_vlan(conn, vlan_number, interface)
     configure_svi(conn, vlan_number, ip, mask)
 
+    conn.save_config()
+
     conn.disconnect()
