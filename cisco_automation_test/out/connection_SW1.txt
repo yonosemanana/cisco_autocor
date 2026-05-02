@@ -1,0 +1,127 @@
+
+2026-04-21 22:31:27,234: %UNICON-INFO: +++ SW1 logfile out/connection_SW1.txt +++
+
+2026-04-21 22:31:27,234: %UNICON-INFO: +++ Unicon plugin iosxe (unicon.plugins.iosxe) +++
+(admin@10.255.255.6) Password: 
+
+2026-04-21 22:31:27,491: %UNICON-INFO: +++ connection to spawn: ssh -l admin 10.255.255.6, id: 124170779859600 +++
+
+2026-04-21 22:31:27,491: %UNICON-ERROR: Use log_file() service for setting log file
+
+2026-04-21 22:31:27,491: %UNICON-INFO: connection to SW1
+
+
+SW1#
+
+2026-04-21 22:31:27,569: %UNICON-INFO: +++ SW1 with via 'cli': enable +++
+enable
+SW1#
+
+2026-04-21 22:31:27,600: %UNICON-INFO: Storing credentials from default as current_credentials
+
+SW1#
+
+2026-04-21 22:31:27,757: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'show version | include operating mode' +++
+show version | include operating mode
+SW1#
+
+2026-04-21 22:31:27,999: %UNICON-INFO: +++ initializing handle +++
+
+2026-04-21 22:31:27,999: %UNICON-INFO: +++ SW1 with via 'cli': enable +++
+enable
+SW1#
+
+2026-04-21 22:31:28,157: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'term length 0' +++
+term length 0
+SW1#
+
+2026-04-21 22:31:28,480: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'term width 0' +++
+term width 0
+SW1#
+
+2026-04-21 22:31:28,778: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'show version' +++
+show version
+Cisco IOS Software, Solaris Software (I86BI_LINUXL2-ADVENTERPRISEK9-M), Experimental Version 15.1(20130726:213425) [dstivers-july26-2013-team_track 104]
+Copyright (c) 1986-2013 by Cisco Systems, Inc.
+Compiled Fri 26-Jul-13 15:56 by dstivers
+
+ROM: Bootstrap program is Linux
+
+SW1 uptime is 2 hours, 22 minutes
+System returned to ROM by reload at 0
+System image file is "unix:/home/alper/GNS3/images/IOU/i86bi-linux-l2-adventerprisek9-15.1a"
+Last reload reason: Unknown reason
+
+
+
+This product contains cryptographic features and is subject to United
+States and local country laws governing import, export, transfer and
+use. Delivery of Cisco cryptographic products does not imply
+third-party authority to import, export, distribute or use encryption.
+Importers, exporters, distributors and users are responsible for
+compliance with U.S. and local country laws. By using this product you
+agree to comply with applicable laws and regulations. If you are unable
+to comply with U.S. and local laws, return this product immediately.
+
+A summary of U.S. laws governing Cisco cryptographic products may be found at:
+http://www.cisco.com/wwl/export/crypto/tool/stqrg.html
+
+If you require further assistance please contact us by sending email to
+export@cisco.com.
+
+Linux Unix (Intel-x86) processor with 189092K bytes of memory.
+Processor board ID 2048002
+16 Ethernet interfaces
+2 Virtual Ethernet interfaces
+16K bytes of NVRAM.
+
+Configuration register is 0x0
+
+SW1#
+
+2026-04-21 22:31:29,084: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'show install summary' +++
+show install summary
+show install summary
+       ^
+% Invalid input detected at '^' marker.
+
+SW1#
+
+2026-04-21 22:31:29,263: %UNICON-ERROR: Could not learn the os version
+
+2026-04-21 22:31:30,016: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'show vlan' +++
+show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Et0/2, Et0/3, Et1/0, Et1/1, Et1/2, Et1/3, Et2/0, Et2/1, Et2/2, Et2/3, Et3/0, Et3/1, Et3/2, Et3/3
+100  Test VLAN                        active    
+101  New Test VLAN 2                  active    
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup 
+1004 fddinet-default                  act/unsup 
+1005 trnet-default                    act/unsup 
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0   
+100  enet  100100     1500  -      -      -        -    -        0      0   
+101  enet  100101     1500  -      -      -        -    -        0      0   
+1002 fddi  101002     1500  -      -      -        -    -        0      0   
+1003 tr    101003     1500  -      -      -        -    -        0      0   
+1004 fdnet 101004     1500  -      -      -        ieee -        0      0   
+1005 trnet 101005     1500  -      -      -        ibm  -        0      0   
+
+Primary Secondary Type              Ports
+------- --------- ----------------- ------------------------------------------
+
+SW1#
+
+2026-04-21 22:31:30,421: %UNICON-INFO: +++ SW1 with via 'cli': executing command 'show mac address-table' +++
+show mac address-table
+          Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+SW1#
