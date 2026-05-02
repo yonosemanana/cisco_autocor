@@ -1,0 +1,36 @@
+testbed:
+  name: PyATS_Nexus
+
+devices:
+  NXOS1:
+    os: nxos
+    credentials:
+      default:
+        username: fakeuser
+        password: fakepassword
+    connections:
+        cli:
+          protocol: ssh
+          host: 10.255.255.4
+
+  l3_router:
+    os: iosxe
+    credentials:
+      default:
+        username: fakeuser
+        password: fakepassword
+    connections:
+        cli:
+          protocol: ssh
+          host: 10.255.255.2
+
+  SW1:
+    os: iosxe
+    credentials:
+      default:
+        username: fakeuser
+        password: fakepassword
+    connections:
+        cli:
+          protocol: ssh
+          host: 10.255.255.6

@@ -1,0 +1,5 @@
+l2_switch:
+  host: 10.255.255.6
+
+l3_router:
+  host: 10.255.255.2
