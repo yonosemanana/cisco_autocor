@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "practice-automation"
+version = "0.1.0"
+description = "My project to practice network automation"
+authors = ["Aleksandr Permyakov <yonosemanana.ap@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-dotenv = "^1.2.2"
+pydantic = "^2.13.4"
+pyyaml = "^6.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
