@@ -28,8 +28,8 @@ device = inventory.devices["CSR1"]
 device_params = get_device_params(device)
 
 with ConnectHandler(**device_params) as session:
-    show_version_output = session.send_command("show version")
-    pprint(show_version_output)
+    show_version_raw = session.send_command("show version")
+    pprint(show_version_raw)
 
 # Gracefully handle connection errors with Exceptions
 
@@ -46,5 +46,7 @@ with ConnectHandler(**device_params) as session:
 # Close session with the device
 
 # Parse device output
-
+with ConnectHandler(**device_params) as session:
+    show_version_parsed = session.send_command("show version", use_textfsm=True)
+    pprint(show_version_parsed)
 
