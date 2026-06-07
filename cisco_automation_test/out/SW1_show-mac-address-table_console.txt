@@ -1,8 +1,0 @@
-+++ SW1 with via 'cli': executing command 'show mac address-table' +++
-show mac address-table
-          Mac Address Table
--------------------------------------------
-
-Vlan    Mac Address       Type        Ports
-----    -----------       --------    -----
-SW1#
