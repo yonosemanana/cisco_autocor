@@ -1,12 +1,14 @@
 import logging
 from pprint import pprint
+from utils import configure_logger
+from models import load_inventory, update_credentials, get_device_params
 
-# from netmiko import ConnectHandler
+from netmiko import ConnectHandler
 
-from utils import configure_logger, get_credentials
-from models import load_inventory
 
 INVENTORY_FILE = "inventory.yaml"
+
+DEVICE = "CSR1"
 
 # Configure console and file loggers
 logger = logging.getLogger(__name__)
@@ -18,12 +20,16 @@ pprint(inventory)
 pprint(inventory.devices)
 
 # Get credentials in a secure way (e.g. environment variables)
-username, password = get_credentials()
 for device in inventory.devices.values():
-    device.username = username
-    device.password = password
+    update_credentials(device)
 
 # Create a session to a device with ConnectHandler
+device = inventory.devices["CSR1"]
+device_params = get_device_params(device)
+
+with ConnectHandler(**device_params) as session:
+    show_version_output = session.send_command("show version")
+    pprint(show_version_output)
 
 # Gracefully handle connection errors with Exceptions
 
