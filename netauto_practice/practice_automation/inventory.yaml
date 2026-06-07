@@ -5,4 +5,4 @@ devices:
     ip: 10.255.255.2
     device_type: cisco_ios
     username: fake_user
-    pasword: fake_pass
+    password: fake_pass

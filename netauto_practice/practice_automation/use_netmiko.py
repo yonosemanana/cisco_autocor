@@ -1,10 +1,10 @@
 import logging
 from pprint import pprint
 
-from netmiko import ConnectHandler
-from dotenv import load_dotenv
+# from netmiko import ConnectHandler
 
-from utils import configure_logger, load_yaml, get_credentials
+from utils import configure_logger, get_credentials
+from models import load_inventory
 
 INVENTORY_FILE = "inventory.yaml"
 
@@ -13,10 +13,15 @@ logger = logging.getLogger(__name__)
 configure_logger()
 
 # Read device inventory from YAML file
-inventory = load_yaml(INVENTORY_FILE)
+inventory = load_inventory(INVENTORY_FILE)
+pprint(inventory)
+pprint(inventory.devices)
 
 # Get credentials in a secure way (e.g. environment variables)
 username, password = get_credentials()
+for device in inventory.devices.values():
+    device.username = username
+    device.password = password
 
 # Create a session to a device with ConnectHandler
 
