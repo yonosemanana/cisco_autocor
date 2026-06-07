@@ -1,4 +1,0 @@
-netmiko
-pyats
-genie
-dotenv
