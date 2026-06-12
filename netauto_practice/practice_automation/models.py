@@ -2,6 +2,8 @@ from pydantic import BaseModel, SecretStr, field_validator
 from utils import load_yaml, get_credentials
 import ipaddress
 
+from pyats.topology import Device
+
 class NetworkDevice(BaseModel):
     """
     Class for a network device in inventory file
@@ -58,3 +60,13 @@ def update_credentials(device: NetworkDevice):
     username, password = get_credentials()
     device.username = SecretStr(username)
     device.password = SecretStr(password)
+
+def update_testbed_credentials(device: Device):
+    """
+    Reads secrets (username and password) from environment variables and update them in Testbed device object in PyATS
+    :return:
+    """
+    username, password = get_credentials()
+    device.credentials.default.username = username
+    device.credentials.default.password = password
+    device.credentials.enable.password = password

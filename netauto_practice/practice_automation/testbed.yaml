@@ -1,0 +1,27 @@
+devices:
+  CSR1:
+    connections:
+      cli:
+        ip: 10.255.255.2
+        protocol: ssh
+    credentials:
+      default:
+        password: fake_password
+        username: fake_user
+      enable:
+        password: fake_password
+    os: iosxe
+    type: iosxe
+  SW1:
+    connections:
+      cli:
+        ip: 10.255.255.6
+        protocol: ssh
+    credentials:
+      default:
+        password: fake_password
+        username: fake_user
+      enable:
+        password: fake_password
+    os: ios
+    type: ios
