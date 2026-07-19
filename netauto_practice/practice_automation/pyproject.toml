@@ -12,6 +12,7 @@ pydantic = "^2.13.4"
 pyyaml = "^6.0.3"
 netmiko = "^4.7.0"
 pyats = {extras = ["full"], version = "^26.5"}
+ncclient = "^0.7.1"
 
 
 [build-system]
