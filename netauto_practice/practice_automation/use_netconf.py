@@ -1,7 +1,7 @@
-from netmiko import ConnectHandler
 from dotenv import load_dotenv
 import logging
 import yaml
+from ncclient import manager
 
 # Configure console and file loggers
 
