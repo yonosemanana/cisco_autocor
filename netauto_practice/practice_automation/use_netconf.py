@@ -1,4 +1,7 @@
 import logging
+from logging import Manager
+from typing import Callable
+
 from utils import configure_logger
 from models import load_inventory, update_credentials
 from pprint import pprint
@@ -8,15 +11,63 @@ from ncclient import manager
 from ncclient.operations.rpc import RPCError
 from ncclient.transport.errors import SSHError, AuthenticationError, TransportError
 
+# Configure console and file loggers
+logger = logging.getLogger(__name__)
+configure_logger()
+
+def netconf_call(connection_params: dict, operation_name: str, *args, **kwargs):
+    """
+    The function creates a device Manager with given params, calls NETCONF operation from it and returns the response, and handles exceptions.
+    :param connection_params: Parameters to create Ncclient's Manager
+    :param operation_name: Ncclient's operation
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    try:
+        with manager.connect(**connection_params) as m:
+            operation = getattr(m, operation_name)
+            return operation(*args, **kwargs)
+    except SSHError as e:
+        logger.error(f"Connection error: {e}")
+    except AuthenticationError as e:
+        logger.error(f"Authentication error: {e}")
+    except RPCError as e:
+        logger.error(f"RPC error: {e}")
+    except TransportError as e:
+        logger.error(f"Transport error: {e}")
+
+
+def netconf_configure_iosxr(connection_params: dict, *args, **kwargs):
+    """
+    IOS XR requires changing in "candidate" config and "commit" in the same session.
+    The function creates a device Manager with given params, calls NETCONF <edit-config> and <commit> operations from it and returns the response, and handles exceptions.
+    :param connection_params: Parameters to create Ncclient's Manager
+    :param operation_name: Ncclient's operation
+    :param args:
+    :param kwargs:
+    :return: tuple of responses from <edit-config> and <commit>
+    """
+    try:
+        with manager.connect(**connection_params) as m:
+            response1 = m.edit_config(*args, **kwargs)
+            response2 = m.commit()
+            return response1, response2
+    except SSHError as e:
+        logger.error(f"Connection error: {e}")
+    except AuthenticationError as e:
+        logger.error(f"Authentication error: {e}")
+    except RPCError as e:
+        logger.error(f"RPC error: {e}")
+    except TransportError as e:
+        logger.error(f"Transport error: {e}")
+
 
 INVENTORY_FILE = "inventory.yaml"
 
 DEVICE = "CSR1"
 DEVICE2 = "IOSXR1"
 
-# Configure console and file loggers
-logger = logging.getLogger(__name__)
-configure_logger()
 
 # Read device inventory from YAML file
 inventory = load_inventory(INVENTORY_FILE)
@@ -67,6 +118,8 @@ except AuthenticationError as e:
 except RPCError as e:
     logger.error(f"RPC error: {e}")
 
+
+# Read configuration
 data_filter = ('subtree', '<interfaces xmlns="http://openconfig.net/yang/interfaces"/>')
 data_filter2 = ('subtree',
                 """<interfaces xmlns="http://openconfig.net/yang/interfaces">
@@ -76,39 +129,18 @@ data_filter2 = ('subtree',
                     </interfaces>
                 """)
 
-# Read configuration
-try:
-    with manager.connect(**connection_params2) as m2:
-        config_data = m2.get_config(source="candidate", filter=data_filter2)
-        pprint(config_data)
-        pprint(config_data.data)
-        pprint(config_data.data_xml)
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
+config_data = netconf_call(connection_params2, "get_config", source="candidate", filter=data_filter2)
+pprint(config_data)
 
-
-
+# Read operational parameters ("show" commands)
 data_filter3 = ('xpath', ({'open-if': 'http://openconfig.net/yang/interfaces'},
                           '//open-if:interface[open-if:name="GigabitEthernet1"]')
                 )
-# Read operational parameters ("show" commands)
-try:
-    with manager.connect(**connection_params) as m:
-        oper_data = m.get(filter=data_filter3)
-        pprint(oper_data)
-        pprint(oper_data.data_xml)
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
 
+oper_data = netconf_call(connection_params, "get", filter=data_filter3)
+pprint(oper_data.data_xml)
 
+# Configure device
 int_config_descr = """
 <config>
     <oc-if:interfaces xmlns:oc-if="http://openconfig.net/yang/interfaces">
@@ -182,41 +214,17 @@ int_config2 = """
     </if:interface-configurations>
 </config>
 """
-# Configure device
-try:
-    with manager.connect(**connection_params2) as m2:
-        response = m2.edit_config(target="candidate", config=config, default_operation="merge")
-        pprint(response)
-        response = m2.commit()
-        pprint(response)
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
 
-
-
-
+config_res = netconf_configure_iosxr(connection_params2, target="candidate", config=config, default_operation="merge")
+for res in config_res:
+    pprint(res)
 
 # Configure IOS XE router
+config_res = netconf_call(connection_params, "get_config", source="running")
+pprint(config_res)
 
-try:
-    with manager.connect(**connection_params) as m:
-        response = m.get_config(source="running")
-        pprint(response.data_xml)
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
-except TransportError as e:
-    logger.error(f"Transport error: {e}")
 
 IOSXE_NATIVE_NS = "http://cisco.com/ns/yang/Cisco-IOS-XE-native"
-
 config2 = etree.Element("config", nsmap={None: IOSXE_NATIVE_NS})
 native = etree.SubElement(config2, "native")
 intf = etree.SubElement(native, "interface")
@@ -235,33 +243,13 @@ ipv4_mask.text = "255.255.192.0"
 intf_shutdown = etree.SubElement(intf_type, "shutdown")
 intf_shutdown.set("operation", "delete")
 
-try:
-    with manager.connect(**connection_params) as m:
-        response = m.edit_config(target="running", config=config2, default_operation="merge")
-        pprint(response)
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
-except TransportError as e:
-    logger.error(f"Transport error: {e}")
-
-
-
+config_res = netconf_call(connection_params, "edit_config", target="running", config=config2)
+pprint(config_res)
 
 
 # Run operational commands (save config, install software, reboot, etc.)
-try:
-    with manager.connect(**connection_params) as m:
-        response = m.copy_config(source="running", target="startup")
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
+config_res = netconf_call(connection_params, "copy_config", source="running", target="startup")
+pprint(config_res)
 
 
 IOS_IA_NS = "http://cisco.com/yang/cisco-ia"
@@ -269,16 +257,11 @@ IOSXE_RPC_NS = "http://cisco.com/ns/yang/Cisco-IOS-XE-rpc"
 save_config = etree.Element(f"{{{IOS_IA_NS}}}" + "save-config")
 reload = etree.Element(f"{{{IOSXE_RPC_NS}}}" + "reload")
 
-try:
-    with manager.connect(**connection_params) as m:
-        response = m.dispatch(save_config)
-        m.dispatch(reload)
-except SSHError as e:
-    logger.error(f"Connection error: {e}")
-except AuthenticationError as e:
-    logger.error(f"Authentication error: {e}")
-except RPCError as e:
-    logger.error(f"RPC error: {e}")
+oper_res = netconf_call(connection_params, "dispatch", save_config)
+pprint(oper_res)
+
+oper_res = netconf_call(connection_params, "dispatch", reload)
+pprint(oper_res)
 
 # Parse device output
 # We don't need to parse device output, because NETCONF with YANG return data that is already structured.
