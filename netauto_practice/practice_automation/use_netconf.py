@@ -1,6 +1,4 @@
 import logging
-from logging import Manager
-from typing import Callable
 
 from utils import configure_logger
 from models import load_inventory, update_credentials
