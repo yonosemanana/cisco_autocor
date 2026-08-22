@@ -3,7 +3,7 @@ import logging
 from utils import configure_logger
 from models import load_inventory, update_credentials
 from pprint import pprint
-from requests import Session, ConnectionError, Timeout, HTTPError
+from requests import Session, ConnectionError, Timeout
 from requests.auth import HTTPBasicAuth
 import urllib3
 
