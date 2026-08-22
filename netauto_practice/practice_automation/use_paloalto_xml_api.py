@@ -158,9 +158,34 @@ params_config_interfaces_ip_show = {"type": "config",
 config_interfaces_ip_show = send_http_request_pa(session, "GET", PALO_BASE_URL, api_key, params=params_config_interfaces_ip_show)
 pprint(config_interfaces_ip_show)
 
+params_config_interfaces_descr = {"type": "config",
+                   "action": "set",
+                   "element": "<comment>Configured with XML API!</comment>",
+                   "xpath": "/config/devices/entry[@name='localhost.localdomain']/network/interface/ethernet/entry[@name='ethernet1/1']"}
+config_interfaces_descr = send_http_request_pa(session, "GET", PALO_BASE_URL, api_key, params=params_config_interfaces_descr)
+pprint(config_interfaces_descr)
+
+params_config_interfaces_vr = {"type": "config",
+                   "action": "set",
+                   "element": "<member>ethernet1/1</member>",
+                   "xpath": "/config/devices/entry[@name='localhost.localdomain']/network/virtual-router/entry[@name='default']/interface"}
+config_interfaces_vr = send_http_request_pa(session, "GET", PALO_BASE_URL, api_key, params=params_config_interfaces_vr)
+pprint(config_interfaces_vr)
+
 
 # Run operational commands (commit config, install software, reboot, etc.)
 params_commit = {"type": "commit",
                  "cmd": "<commit></commit>"}
 commit = send_http_request_pa(session, "POST", PALO_BASE_URL, api_key, params=params_commit)
 pprint(commit)
+
+params_jobs = {"type": "op",
+               "cmd": "<show><jobs><all></all></jobs></show>"}
+jobs = send_http_request_pa(session, "POST", PALO_BASE_URL, api_key, params=params_jobs)
+pprint(jobs)
+
+job_id = 3
+params_job = {"type": "op",
+              "cmd": f"<show><jobs><id>{job_id}</id></jobs></show>"}
+job = send_http_request_pa(session, "POST", PALO_BASE_URL, api_key, params=params_job)
+pprint(job)
