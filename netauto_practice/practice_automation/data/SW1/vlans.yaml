@@ -1,0 +1,8 @@
+---
+vlans:
+  - vlan_id: 1101
+    name: Test VLAN
+  - vlan_id: 1102
+    name: Another test VLAN
+  - vlan_id: 1200
+    name: One more test VLAN

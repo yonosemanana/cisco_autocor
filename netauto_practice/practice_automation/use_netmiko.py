@@ -26,7 +26,7 @@ def handle_send_command(device: BaseConnection, command: str, use_textfsm: bool 
         logger.debug(f"Output of command {command} from device {device.host}: {output}")
         return output
     except (NetmikoBaseException, SSHException) as e:
-        logger.error(f"Error when connecting to {device_params['ip']}: {e}")
+        logger.error(f"Error when connecting to {device.host}: {e}")
         return None
 
 def handle_send_config_set(device: BaseConnection, config_set: list[str]) -> str | None:
@@ -39,7 +39,7 @@ def handle_send_config_set(device: BaseConnection, config_set: list[str]) -> str
         logger.debug(f"Output of commands {config_set} from device {device.host}: {output}")
         return output
     except (NetmikoBaseException, SSHException) as e:
-        logger.error(f"Error when connecting to {device_params['ip']}: {e}")
+        logger.error(f"Error when connecting to {device.host}: {e}")
         return None
 
 if __name__ == "__main__":
