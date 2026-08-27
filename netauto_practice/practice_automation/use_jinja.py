@@ -57,11 +57,15 @@ vlans_data = load_yaml(DATA_DIR / DEVICE / VLANS_DATA_FILE)
 pprint(vlans_data)
 vlans_config = vlans_template.render(vlans=vlans_data["vlans"])
 pprint(vlans_config)
+vlans_config_set = vlans_config.split("\n")
+pprint(vlans_config_set)
 
 # Apply new configuration to network devices and verify
 with ConnectHandler(**device_params) as conn:
-    vlans_config_output = handle_send_config_set(conn, vlans_config)
+    vlans_config_output = handle_send_config_set(conn, vlans_config_set)
     pprint(vlans_config_output)
 
     vlans = handle_send_command(conn, "show vlan brief")
     pprint(vlans)
+
+    conn.save_config()

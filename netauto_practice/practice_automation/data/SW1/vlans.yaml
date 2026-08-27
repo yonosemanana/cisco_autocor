@@ -6,3 +6,7 @@ vlans:
     name: Another test VLAN
   - vlan_id: 1200
     name: One more test VLAN
+  - vlan_id: 1210
+    name: New test VLAN
+  - vlan_id: 1220
+    name: And one more test VLAN
