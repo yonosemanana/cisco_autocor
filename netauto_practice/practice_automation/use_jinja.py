@@ -14,6 +14,7 @@ from netmiko import ConnectHandler
 logger = logging.getLogger(__name__)
 configure_logger()
 
+
 DEVICE = "SW1"
 INVENTORY_FILE = "inventory.yaml"
 # Read device inventory from YAML file
@@ -38,7 +39,7 @@ with ConnectHandler(**device_params) as conn:
 # Generate config with Jinja2 templates
 DATA_DIR = Path("data")
 JINJA2_DIR = Path("jinja2_templates")
-GENERATE_VLANS_TEMPLATE_FILE = "vlans.j2"
+GENERATE_VLANS_TEMPLATE_FILE = "gen_vlans.j2"
 VLANS_TEMPLATE_FILE = "vlans.j2"
 INTERFACES_TEMPLATE_FILE = "interfaces.j2"
 CONFIG_TEMPLATE_FILE = "config.j2"
@@ -60,12 +61,48 @@ pprint(vlans_config)
 vlans_config_set = vlans_config.split("\n")
 pprint(vlans_config_set)
 
-# Apply new configuration to network devices and verify
-with ConnectHandler(**device_params) as conn:
-    vlans_config_output = handle_send_config_set(conn, vlans_config_set)
-    pprint(vlans_config_output)
+# Apply new VLAN configuration to network devices and verify
+# with ConnectHandler(**device_params) as conn:
+#     vlans_config_output = handle_send_config_set(conn, vlans_config_set)
+#     pprint(vlans_config_output)
+#
+#     vlans = handle_send_command(conn, "show vlan brief")
+#     pprint(vlans)
+#
+#     conn.save_config()
 
-    vlans = handle_send_command(conn, "show vlan brief")
-    pprint(vlans)
+intfs_template = jinja_env.get_template(INTERFACES_TEMPLATE_FILE)
+intfs_data = load_yaml(DATA_DIR / DEVICE / INTERFACES_DATA_FILE)
+intfs_config = intfs_template.render(interfaces=intfs_data["interfaces"])
+intfs_config_set = intfs_config.split("\n")
+# Apply new interfaces configuration to network devices and verify
+# with ConnectHandler(**device_params) as conn:
+#     intfs = handle_send_command(conn, "show run | sec interface")
+#     pprint(intfs)
+#
+#     intfs_config_output = handle_send_config_set(conn, intfs_config_set)
+#     pprint(intfs_config_set)
+#
+#     intfs = handle_send_command(conn, "show run | sec interface")
+#     pprint(intfs)
+#
+#     conn.save_config()
+
+
+
+full_config_template = jinja_env.get_template(CONFIG_TEMPLATE_FILE)
+full_config_data = load_yaml(DATA_DIR / DEVICE / CONFIG_DATA_FILE)
+full_config = full_config_template.render(interfaces=intfs_data["interfaces"], vlans=vlans_data["vlans"], hostname=full_config_data["hostname"])
+full_config_set = full_config.split("\n")
+# Apply full new configuration to network devices and verify
+with ConnectHandler(**device_params) as conn:
+    show_run = handle_send_command(conn, "show run")
+    pprint(show_run)
+
+    full_config_output = handle_send_config_set(conn, full_config_set)
+    pprint(full_config_output)
+
+    show_run = handle_send_command(conn, "show run")
+    pprint(show_run)
 
     conn.save_config()
