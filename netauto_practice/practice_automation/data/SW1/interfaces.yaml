@@ -1,0 +1,32 @@
+---
+interfaces:
+  - name: Ethernet1/0
+    mode: access
+    vlan: 100
+    description: Test - Data
+    enabled: yes
+  - name: Ethernet1/1
+    mode: access
+    vlan: 200
+    description: Test - Voice
+    enabled: Yes
+  - name: Ethernet1/2
+    mode: trunk
+    vlan: all
+    description: Test - Uplink
+    enabled: True
+  - name: Ethernet1/3
+    mode: trunk
+    vlan: 1200,1210,1220
+    description: Test - Server
+    enabled: true
+  - name: Ethernet2/0
+    mode: access
+    vlan: 100
+    description: Test - Data
+    enabled: no
+  - name: Ethernet2/1
+    mode: access
+    vlan: 200
+    description: Test - Voice
+    enabled: no

@@ -1,0 +1,4 @@
+{% for vlan in range(1100, 1501, 100) %}
+vlan {{ vlan }}
+ name Test VLAN - {{ vlan }}
+{% endfor %}

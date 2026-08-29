@@ -1,0 +1,10 @@
+hostname {{ hostname }}
+
+no ip http server
+ip http secure-server
+
+vtp mode off
+
+{% include 'vlans.j2' %}
+
+{% include 'interfaces.j2' %}
